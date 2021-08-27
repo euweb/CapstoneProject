@@ -128,9 +128,9 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# data
+# ignore data
 data/
 data2/GlobalLandTemperaturesByCity.csv
 
-# misc
+# os files
 .DS_Store
