@@ -133,3 +133,6 @@ data/
 
 # os files
 .DS_Store
+
+# Airflow
+logs
