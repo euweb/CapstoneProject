@@ -130,7 +130,6 @@ dmypy.json
 
 # ignore data
 data/
-data2/GlobalLandTemperaturesByCity.csv
 
 # os files
 .DS_Store
