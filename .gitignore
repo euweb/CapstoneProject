@@ -136,3 +136,6 @@ data/
 
 # Airflow
 logs
+
+# ignore config file
+dwh.cfg
