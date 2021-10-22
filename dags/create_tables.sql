@@ -1,32 +1,34 @@
-CREATE TABLE i94imm_staging (
-  i94yr SMALLINT,
-  i94mon SMALLINT,
-  i94cit SMALLINT,
-  i94res INTEGER,
+--- Staging tables
+
+CREATE TABLE IF NOT EXISTS public.i94imm_staging (
+  i94yr DOUBLE PRECISION,
+  i94mon DOUBLE PRECISION,
+  i94cit DOUBLE PRECISION,
+  i94res DOUBLE PRECISION,
   i94port varchar(256),
-  arrdate INTEGER,
-  i94mode SMALLINT,
+  arrdate DOUBLE PRECISION,
+  i94mode DOUBLE PRECISION,
   i94addr varchar(256),
-  depdate INTEGER,
-  i94bir SMALLINT,
-  i94visa SMALLINT,
-  dtadfile INTEGER,
+  depdate DOUBLE PRECISION,
+  i94bir DOUBLE PRECISION,
+  i94visa DOUBLE PRECISION,
+  dtadfile varchar(256),
   visapost varchar(256),
   occup varchar(256),
   entdepa varchar(256),
   entdepd varchar(256),
   entdepu varchar(256),
   matflag varchar(256),
-  biryear SMALLINT,
+  biryear DOUBLE PRECISION,
   dtaddto varchar(256),
   gender varchar(256),
-  insnum INTEGER,
+  insnum varchar(256),
   airline varchar(256),
   fltno varchar(256),
   visatype varchar(256)
-)
+);
 
-CREATE TABLE temperature_staging (
+CREATE TABLE IF NOT EXISTS public.temperature_staging (
   dt varchar(256),
   AverageTemperature numeric(18,0),
   AverageTemperatureUncertainty numeric(18,0),
@@ -34,9 +36,9 @@ CREATE TABLE temperature_staging (
   Country varchar(256),
   Latitude varchar(256),
   Longitude varchar(256)
-)
+);
 
-CREATE TABLE us_cities_demographics_staging (
+CREATE TABLE IF NOT EXISTS public.us_cities_demographics_staging (
     city varchar(256),
     state varchar(256),
     median_age numeric(18,0),
@@ -51,7 +53,7 @@ CREATE TABLE us_cities_demographics_staging (
     race_count INTEGER
 );
 
-CREATE TABLE airport_codes_staging (
+CREATE TABLE IF NOT EXISTS public.airport_codes_staging (
     ident varchar(256),
     type varchar(256),
     name varchar(256),
