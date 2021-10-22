@@ -129,7 +129,7 @@ dmypy.json
 .pyre/
 
 # ignore data
-data/
+data*
 
 # os files
 .DS_Store
