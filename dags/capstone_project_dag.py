@@ -66,9 +66,9 @@ with DAG(
     #     ignoreheader=1
     # )
 
-    stage_us_cities_demographics_staging_to_redshift = DummyOperator(task_id='Stage_us_cities_demographics_staging',  dag=dag)
-    # stage_us_cities_demographics_staging_to_redshift = StageToRedshiftCSVOperator(
-    #     task_id='Stage_us_cities_demographics_staging',
+    stage_us_cities_demographics_to_redshift = DummyOperator(task_id='Stage_us_cities_demographics',  dag=dag)
+    # stage_us_cities_demographics_to_redshift = StageToRedshiftCSVOperator(
+    #     task_id='Stage_us_cities_demographics',
     #     dag=dag,
     #     table="public.us_cities_demographics_staging",
     #     redshift_conn_id="redshift",
@@ -79,9 +79,9 @@ with DAG(
     #     ignoreheader=1
     # )
 
-    stage_airport_codes_staging_to_redshift = DummyOperator(task_id='Stage_airport_codes_staging',  dag=dag)
-    # stage_airport_codes_staging_to_redshift = StageToRedshiftCSVOperator(
-    #     task_id='Stage_airport_codes_staging',
+    stage_airport_codes_to_redshift = DummyOperator(task_id='Stage_airport_codes',  dag=dag)
+    # stage_airport_codes_to_redshift = StageToRedshiftCSVOperator(
+    #     task_id='Stage_airport_codes',
     #     dag=dag,
     #     table="public.airport_codes_staging",
     #     redshift_conn_id="redshift",
@@ -92,10 +92,12 @@ with DAG(
     #     ignoreheader=1
     # )
 
+
+
     end_operator = DummyOperator(task_id='End_execution',  dag=dag)
 
     start_operator >> create_tables_task >> [
         stage_i94imm_to_redshift,
         stage_temperature_to_redshift,
-        stage_us_cities_demographics_staging_to_redshift,
-        stage_airport_codes_staging_to_redshift] >> end_operator
+        stage_us_cities_demographics_to_redshift,
+        stage_airport_codes_to_redshift] >> end_operator
