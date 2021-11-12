@@ -8,6 +8,7 @@ from operators import ( LoadFactOperator, GenericDataQualityOperator,
                        StageToRedshiftParquetOperator)
 
 from helpers import SqlQueries
+from operators.load_dimension import LoadDimensionOperator
 from operators.stage_redshift_csv import StageToRedshiftCSVOperator
 
 
@@ -92,12 +93,115 @@ with DAG(
     #     ignoreheader=1
     # )
 
+    copy_i94addrl_mapping_to_redshift = DummyOperator(task_id='Copy_i94addrl_mappings',  dag=dag)
+    # copy_i94addrl_mapping_to_redshift = StageToRedshiftCSVOperator(
+    #     task_id='Copy_i94addrl_mappings',
+    #     dag=dag,
+    #     table="public.i94addr_mapping",
+    #     redshift_conn_id="redshift",
+    #     aws_credentials_id="aws_credentials",
+    #     s3_bucket=S3_BUCKET,
+    #     s3_key="capestone-project/source-data/i94addrl_mapping.csv",
+    #     delimiter=',',
+    #     ignoreheader=1
+    # )
 
+    copy_i94_cit_res_mapping_to_redshift = DummyOperator(task_id='Copy_i94_cit_res_mappings',  dag=dag)
+    # copy_i94_cit_res_mapping_to_redshift = StageToRedshiftCSVOperator(
+    #     task_id='Copy_i94_cit_res_mappings',
+    #     dag=dag,
+    #     table="public.i94_cit_res_mapping",
+    #     redshift_conn_id="redshift",
+    #     aws_credentials_id="aws_credentials",
+    #     s3_bucket=S3_BUCKET,
+    #     s3_key="capestone-project/source-data/i94cntyl_mapping.csv",
+    #     delimiter=',',
+    #     ignoreheader=1
+    # )
+
+    copy_i94mode_mapping_to_redshift = DummyOperator(task_id='Copy_i94mode_mappings',  dag=dag)
+    # copy_i94mode_mapping_to_redshift = StageToRedshiftCSVOperator(
+    #     task_id='Copy_i94mode_mappings',
+    #     dag=dag,
+    #     table="public.i94mode_mapping",
+    #     redshift_conn_id="redshift",
+    #     aws_credentials_id="aws_credentials",
+    #     s3_bucket=S3_BUCKET,
+    #     s3_key="capestone-project/source-data/i94model_mapping.csv",
+    #     delimiter=',',
+    #     ignoreheader=1
+    # )
+
+    copy_i94port_mapping_to_redshift = DummyOperator(task_id='Copy_i94port_mappings',  dag=dag)
+    # copy_i94port_mapping_to_redshift = StageToRedshiftCSVOperator(
+    #     task_id='Copy_i94port_mappings',
+    #     dag=dag,
+    #     table="public.i94port_mapping",
+    #     redshift_conn_id="redshift",
+    #     aws_credentials_id="aws_credentials",
+    #     s3_bucket=S3_BUCKET,
+    #     s3_key="capestone-project/source-data/i94prtl_mapping.csv",
+    #     delimiter=',',
+    #     ignoreheader=1
+    # )
+
+    copy_i94visa_mapping_to_redshift = DummyOperator(task_id='Copy_i94visa_mappings',  dag=dag)
+    # copy_i94visa_mapping_to_redshift = StageToRedshiftCSVOperator(
+    #     task_id='Copy_i94visa_mappings',
+    #     dag=dag,
+    #     table="public.i94visa_mapping",
+    #     redshift_conn_id="redshift",
+    #     aws_credentials_id="aws_credentials",
+    #     s3_bucket=S3_BUCKET,
+    #     s3_key="capestone-project/source-data/i94visa_mapping.csv",
+    #     delimiter=',',
+    #     ignoreheader=1
+    # )
+
+    load_i94imm_table = LoadFactOperator(
+        task_id='Load_visit_fact_table',
+        dag=dag,
+        postgres_conn_id="redshift",
+        table="public.visit",
+        sql=SqlQueries.i94imm_table_insert
+    )
+
+    load_date_table = LoadDimensionOperator(
+        task_id='Load_date_dim_table',
+        dag=dag,
+        postgres_conn_id="redshift",
+        table="public.date",
+        sql=SqlQueries.date_table_insert
+    )
+
+    load_airport_table = LoadDimensionOperator(
+        task_id='Load_airport_dim_table',
+        dag=dag,
+        postgres_conn_id="redshift",
+        table="public.port",
+        sql=SqlQueries.airport_table_insert
+    )
 
     end_operator = DummyOperator(task_id='End_execution',  dag=dag)
 
-    start_operator >> create_tables_task >> [
+    start_operator >> create_tables_task
+    
+    create_tables_task >> [
         stage_i94imm_to_redshift,
         stage_temperature_to_redshift,
         stage_us_cities_demographics_to_redshift,
         stage_airport_codes_to_redshift] >> end_operator
+
+    create_tables_task >> [
+        copy_i94addrl_mapping_to_redshift,
+        copy_i94_cit_res_mapping_to_redshift,
+        copy_i94mode_mapping_to_redshift,
+        copy_i94port_mapping_to_redshift,
+        copy_i94visa_mapping_to_redshift
+    ] >> end_operator
+
+    stage_i94imm_to_redshift >> load_i94imm_table
+
+    copy_i94port_mapping_to_redshift >> load_airport_table << load_i94imm_table
+
+    load_i94imm_table >> load_date_table >> end_operator
