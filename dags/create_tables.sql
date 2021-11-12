@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS public.airport_codes_staging (
     ident varchar(256),
     type varchar(256),
     name varchar(256),
-    elevation_ft NUMERIC,
+    elevation_ft DOUBLE PRECISION,
     continent varchar(256),
     iso_country varchar(256),
     iso_region varchar(256),
@@ -67,3 +67,77 @@ CREATE TABLE IF NOT EXISTS public.airport_codes_staging (
     local_code varchar(256),
     coordinates varchar(256)
 );
+
+
+-- model tables
+CREATE TABLE IF NOT EXISTS public.visit (
+  year_of_arrival SMALLINT,
+  month_of_arrival SMALLINT,
+  country_of_citizenship INTEGER,
+  country_of_residence INTEGER,
+  port_of_entry varchar(256),
+  arrival_date DATE,
+  arrivid_by INTEGER,
+  state_of_arrival varchar(256),
+  departure_date DATE,
+  age SMALLINT,
+  visa SMALLINT,
+  birth_year SMALLINT,
+  gender varchar(256),
+  visatype varchar(256)
+);
+
+CREATE TABLE IF NOT EXISTS public.i94_cit_res_mapping (
+  id INTEGER,
+  description varchar(256)
+);
+
+CREATE TABLE IF NOT EXISTS public.i94port_mapping (
+  id varchar(256),
+  description varchar(256)
+);
+
+CREATE TABLE IF NOT EXISTS public.i94mode_mapping (
+  id INTEGER,
+  description varchar(256)
+);
+
+CREATE TABLE IF NOT EXISTS public.i94addr_mapping (
+  id varchar(256),
+  description varchar(256)
+);
+
+CREATE TABLE IF NOT EXISTS public.i94visa_mapping (
+  id INTEGER,
+  description varchar(256)
+);
+
+CREATE TABLE IF NOT EXISTS public.date (
+  date DATE,
+  day SMALLINT,
+  week SMALLINT,
+  month SMALLINT,
+  year SMALLINT,
+  weekday SMALLINT
+);
+
+CREATE TABLE IF NOT EXISTS public.port (
+  port varchar(256),
+  state varchar(256),
+  city varchar(256)
+);
+
+CREATE TABLE IF NOT EXISTS public.temperature (
+  dt varchar(256),
+  AverageTemperature numeric(18,0),
+  AverageTemperatureUncertainty numeric(18,0),
+  City varchar(256),
+  Country varchar(256),
+  Latitude varchar(256),
+  Longitude varchar(256)
+);
+
+-- CREATE TABLE IF NOT EXISTS public.visapost ();
+
+-- CREATE TABLE IF NOT EXISTS public.visatype ();
+
