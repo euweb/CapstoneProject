@@ -88,3 +88,36 @@ class SqlQueries:
 		JOIN
 		    ports b on a.id=b.port
     """)
+
+
+    port_city_table_insert = ("""
+        SELECT DISTINCT a.city,
+            a.state, 
+            a.median_age, 
+            a.male_population, 
+            a.female_population, 
+            a.total_population, 
+            a.number_of_veterans, 
+            a.foreign_born, 
+            a.average_household_size, 
+            a.state_code,
+            f.race_count AS white,
+            b.race_count AS american_indian_and_alaska_native,
+            c.race_count AS hispanic_or_latino,
+            d.race_count AS black_or_african_american,
+            e.race_count AS asian
+        FROM us_cities_demographics_staging a
+        JOIN us_cities_demographics_staging b ON a.city = b.city AND a.state = b.state AND
+            b.race = 'American Indian and Alaska Native'
+        JOIN us_cities_demographics_staging c ON a.city = c.city AND a.state = c.state 
+            AND c.race = 'Hispanic or Latino'
+        JOIN us_cities_demographics_staging d ON a.city = d.city AND a.state = d.state 
+            AND d.race = 'Black or African-American'
+        JOIN us_cities_demographics_staging e ON a.city = e.city AND a.state = e.state 
+            AND e.race = 'Asian'
+        JOIN us_cities_demographics_staging f ON a.city = f.city AND a.state = f.state 
+            AND f.race = 'White'
+        GROUP BY a.city, a.state, a.median_age, a.male_population, a.female_population, 
+        	a.total_population, a.number_of_veterans, a.foreign_born, a.average_household_size, a.state_code, 
+         	white, american_indian_and_alaska_native, hispanic_or_latino, black_or_african_american, asian
+    """)

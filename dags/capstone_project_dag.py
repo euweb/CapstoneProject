@@ -182,6 +182,14 @@ with DAG(
         sql=SqlQueries.airport_table_insert
     )
 
+    load_port_city_table = LoadDimensionOperator(
+        task_id='Load_port_city_dim_table',
+        dag=dag,
+        postgres_conn_id="redshift",
+        table="public.port_city",
+        sql=SqlQueries.port_city_table_insert
+    )
+
     end_operator = DummyOperator(task_id='End_execution',  dag=dag)
 
     start_operator >> create_tables_task
@@ -203,5 +211,7 @@ with DAG(
     stage_i94imm_to_redshift >> load_i94imm_table
 
     copy_i94port_mapping_to_redshift >> load_airport_table << load_i94imm_table
+
+    stage_us_cities_demographics_to_redshift >> load_port_city_table >> end_operator
 
     load_i94imm_table >> load_date_table >> end_operator

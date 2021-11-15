@@ -137,6 +137,23 @@ CREATE TABLE IF NOT EXISTS public.temperature (
   Longitude varchar(256)
 );
 
+CREATE TABLE IF NOT EXISTS public.port_city (
+  city varchar(256),
+  state varchar(256),
+  median_age numeric(18,0),
+  male_population INTEGER,
+  female_population INTEGER,
+  total_population INTEGER,
+  number_of_veterans INTEGER,
+  foreign_born INTEGER,
+  average_household_size numeric(18,0),
+  state_code varchar(256),
+  white INTEGER,
+  american_indian_and_alaska_native INTEGER,
+  hispanic_or_latino INTEGER,
+  black_or_african_american INTEGER,
+  asian INTEGER
+)
 -- CREATE TABLE IF NOT EXISTS public.visapost ();
 
 -- CREATE TABLE IF NOT EXISTS public.visatype ();
