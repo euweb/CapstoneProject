@@ -1,6 +1,6 @@
 class SqlQueries:
 
-    i94imm_table_insert = ("""
+    visit_table_insert = ("""
         SELECT 
             CAST(i94yr as INTEGER) as year_of_arrival,
             CAST(i94mon as INTEGER) as month_of_arrival,
@@ -84,7 +84,7 @@ class SqlQueries:
 		    	ELSE
 		    		b.city
 		    END AS city
-		FROM i94port_mapping a
+		FROM port_mapping a
 		JOIN
 		    ports b on a.id=b.port
     """)

@@ -11,8 +11,6 @@ from helpers import SqlQueries
 from operators.load_dimension import LoadDimensionOperator
 from operators.stage_redshift_csv import StageToRedshiftCSVOperator
 
-
-
 DAG_ID = 'capstone_project_dag2'
 S3_BUCKET = Variable.get("s3_bucket")
 START_DATE = datetime(2021, 10, 12)
@@ -54,7 +52,7 @@ with DAG(
     #     s3_key="capestone-project/source-data/parquet"
     # )
 
-    stage_temperature_to_redshift = DummyOperator(task_id='stage_temperature_to_redshift',  dag=dag)
+    # stage_temperature_to_redshift = DummyOperator(task_id='stage_temperature_to_redshift',  dag=dag)
     # stage_temperature_to_redshift = StageToRedshiftCSVOperator(
     #     task_id='Stage_temperature',
     #     dag=dag,
@@ -97,7 +95,7 @@ with DAG(
     # copy_i94addrl_mapping_to_redshift = StageToRedshiftCSVOperator(
     #     task_id='Copy_i94addrl_mappings',
     #     dag=dag,
-    #     table="public.i94addr_mapping",
+    #     table="public.state",
     #     redshift_conn_id="redshift",
     #     aws_credentials_id="aws_credentials",
     #     s3_bucket=S3_BUCKET,
@@ -110,7 +108,7 @@ with DAG(
     # copy_i94_cit_res_mapping_to_redshift = StageToRedshiftCSVOperator(
     #     task_id='Copy_i94_cit_res_mappings',
     #     dag=dag,
-    #     table="public.i94_cit_res_mapping",
+    #     table="public.country_mapping",
     #     redshift_conn_id="redshift",
     #     aws_credentials_id="aws_credentials",
     #     s3_bucket=S3_BUCKET,
@@ -123,7 +121,7 @@ with DAG(
     # copy_i94mode_mapping_to_redshift = StageToRedshiftCSVOperator(
     #     task_id='Copy_i94mode_mappings',
     #     dag=dag,
-    #     table="public.i94mode_mapping",
+    #     table="public.mode_mapping",
     #     redshift_conn_id="redshift",
     #     aws_credentials_id="aws_credentials",
     #     s3_bucket=S3_BUCKET,
@@ -136,7 +134,7 @@ with DAG(
     # copy_i94port_mapping_to_redshift = StageToRedshiftCSVOperator(
     #     task_id='Copy_i94port_mappings',
     #     dag=dag,
-    #     table="public.i94port_mapping",
+    #     table="public.port_mapping",
     #     redshift_conn_id="redshift",
     #     aws_credentials_id="aws_credentials",
     #     s3_bucket=S3_BUCKET,
@@ -149,7 +147,7 @@ with DAG(
     # copy_i94visa_mapping_to_redshift = StageToRedshiftCSVOperator(
     #     task_id='Copy_i94visa_mappings',
     #     dag=dag,
-    #     table="public.i94visa_mapping",
+    #     table="public.visa_mapping",
     #     redshift_conn_id="redshift",
     #     aws_credentials_id="aws_credentials",
     #     s3_bucket=S3_BUCKET,
@@ -158,12 +156,13 @@ with DAG(
     #     ignoreheader=1
     # )
 
-    load_i94imm_table = LoadFactOperator(
+    load_visit_table = LoadFactOperator(
         task_id='Load_visit_fact_table',
         dag=dag,
         postgres_conn_id="redshift",
         table="public.visit",
-        sql=SqlQueries.i94imm_table_insert
+        append=False,
+        sql=SqlQueries.visit_table_insert
     )
 
     load_date_table = LoadDimensionOperator(
@@ -171,6 +170,7 @@ with DAG(
         dag=dag,
         postgres_conn_id="redshift",
         table="public.date",
+        append=False,
         sql=SqlQueries.date_table_insert
     )
 
@@ -179,6 +179,7 @@ with DAG(
         dag=dag,
         postgres_conn_id="redshift",
         table="public.port",
+        append=False,
         sql=SqlQueries.airport_table_insert
     )
 
@@ -187,7 +188,33 @@ with DAG(
         dag=dag,
         postgres_conn_id="redshift",
         table="public.port_city",
+        append=False,
         sql=SqlQueries.port_city_table_insert
+    )
+
+    end_laod_data_operator = DummyOperator(task_id='End_load_data',  dag=dag)
+
+    data_quality_checks = [
+        # check table contents
+        {'test_sql': "SELECT COUNT(*) FROM visit", 'expected_result': 0, "comparison": '>'},
+        {'test_sql': "SELECT COUNT(*) FROM port", 'expected_result': 0, "comparison": '>'},
+        {'test_sql': "SELECT COUNT(*) FROM country_mapping", 'expected_result': 0, "comparison": '>'},
+        {'test_sql': "SELECT COUNT(*) FROM port_city", 'expected_result': 0, "comparison": '>'},
+        {'test_sql': "SELECT COUNT(*) FROM mode_mapping", 'expected_result': 0, "comparison": '>'},
+        {'test_sql': "SELECT COUNT(*) FROM visa_mapping", 'expected_result': 0, "comparison": '>'},
+        {'test_sql': "SELECT COUNT(*) FROM state", 'expected_result': 0, "comparison": '>'},
+        {'test_sql': "SELECT COUNT(*) FROM date", 'expected_result': 0, "comparison": '>'},
+        # check doubles in primary keys
+        {'test_sql': GenericDataQualityOperator.DBL_VALUES_TEMPLATE.format(table='port_city',pk_cols='city, state'), 'expected_result': 0, "comparison": 'none'},
+        # check nulls in primary keys
+        #{'test_sql': "SELECT COUNT(*) FROM users WHERE userid is NULL or level is NULL", 'expected_result': 0, "comparison": '='},
+    ]
+
+    run_quality_checks = GenericDataQualityOperator(
+        task_id='Run_data_quality_checks',
+        redshift_conn_id="redshift",
+        checks=data_quality_checks,
+        dag=dag
     )
 
     end_operator = DummyOperator(task_id='End_execution',  dag=dag)
@@ -196,9 +223,9 @@ with DAG(
     
     create_tables_task >> [
         stage_i94imm_to_redshift,
-        stage_temperature_to_redshift,
+        #stage_temperature_to_redshift,
         stage_us_cities_demographics_to_redshift,
-        stage_airport_codes_to_redshift] >> end_operator
+        stage_airport_codes_to_redshift]
 
     create_tables_task >> [
         copy_i94addrl_mapping_to_redshift,
@@ -206,12 +233,24 @@ with DAG(
         copy_i94mode_mapping_to_redshift,
         copy_i94port_mapping_to_redshift,
         copy_i94visa_mapping_to_redshift
-    ] >> end_operator
+    ]
 
-    stage_i94imm_to_redshift >> load_i94imm_table
+    stage_i94imm_to_redshift >> load_visit_table
 
-    copy_i94port_mapping_to_redshift >> load_airport_table << load_i94imm_table
+    [stage_airport_codes_to_redshift, 
+     copy_i94port_mapping_to_redshift] >> load_airport_table
 
-    stage_us_cities_demographics_to_redshift >> load_port_city_table >> end_operator
+    stage_us_cities_demographics_to_redshift >> load_port_city_table
 
-    load_i94imm_table >> load_date_table >> end_operator
+    load_visit_table >> load_date_table
+
+    [
+        load_date_table,
+        load_port_city_table,
+        load_airport_table,
+        load_visit_table,
+        copy_i94addrl_mapping_to_redshift,
+        copy_i94_cit_res_mapping_to_redshift
+    ] >> end_laod_data_operator
+
+    end_laod_data_operator >> run_quality_checks >> end_operator
