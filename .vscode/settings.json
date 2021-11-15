@@ -2,5 +2,6 @@
     "jupyter.jupyterServerType": "local",
     "python.analysis.extraPaths": [
         "./plugins"
-    ]
+    ],
+    "notebook.output.textLineLimit": 500
 }
