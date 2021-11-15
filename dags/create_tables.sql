@@ -28,15 +28,15 @@ CREATE TABLE IF NOT EXISTS public.i94imm_staging (
   visatype varchar(256)
 );
 
-CREATE TABLE IF NOT EXISTS public.temperature_staging (
-  dt varchar(256),
-  AverageTemperature numeric(18,0),
-  AverageTemperatureUncertainty numeric(18,0),
-  City varchar(256),
-  Country varchar(256),
-  Latitude varchar(256),
-  Longitude varchar(256)
-);
+-- CREATE TABLE IF NOT EXISTS public.temperature_staging (
+--   dt varchar(256),
+--   AverageTemperature numeric(18,0),
+--   AverageTemperatureUncertainty numeric(18,0),
+--   City varchar(256),
+--   Country varchar(256),
+--   Latitude varchar(256),
+--   Longitude varchar(256)
+-- );
 
 CREATE TABLE IF NOT EXISTS public.us_cities_demographics_staging (
     city varchar(256),
@@ -70,6 +70,7 @@ CREATE TABLE IF NOT EXISTS public.airport_codes_staging (
 
 
 -- model tables
+
 CREATE TABLE IF NOT EXISTS public.visit (
   year_of_arrival SMALLINT,
   month_of_arrival SMALLINT,
@@ -87,27 +88,27 @@ CREATE TABLE IF NOT EXISTS public.visit (
   visatype varchar(256)
 );
 
-CREATE TABLE IF NOT EXISTS public.i94_cit_res_mapping (
+CREATE TABLE IF NOT EXISTS public.country_mapping (
   id INTEGER,
   description varchar(256)
 );
 
-CREATE TABLE IF NOT EXISTS public.i94port_mapping (
+CREATE TABLE IF NOT EXISTS public.port_mapping (
   id varchar(256),
   description varchar(256)
 );
 
-CREATE TABLE IF NOT EXISTS public.i94mode_mapping (
+CREATE TABLE IF NOT EXISTS public.mode_mapping (
   id INTEGER,
   description varchar(256)
 );
 
-CREATE TABLE IF NOT EXISTS public.i94addr_mapping (
+CREATE TABLE IF NOT EXISTS public.state (
   id varchar(256),
   description varchar(256)
 );
 
-CREATE TABLE IF NOT EXISTS public.i94visa_mapping (
+CREATE TABLE IF NOT EXISTS public.visa_mapping (
   id INTEGER,
   description varchar(256)
 );
@@ -154,7 +155,3 @@ CREATE TABLE IF NOT EXISTS public.port_city (
   black_or_african_american INTEGER,
   asian INTEGER
 )
--- CREATE TABLE IF NOT EXISTS public.visapost ();
-
--- CREATE TABLE IF NOT EXISTS public.visatype ();
-
