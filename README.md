@@ -51,6 +51,51 @@ In `spark/convert_sas.py` we used Spark to preprocess SAS data for generating pa
 
 ### Complete Project Write Up
 
+After the ETL has processed the result following querry can be run against the model:
+
+Show the count of visitors per year, month, country of citezenship and port of entry in the U.S. and additional demographics information of the port of entry.
+
+```sql
+select
+    v.year_of_arrival,
+    v.month_of_arrival,
+    c.description as origin,
+    v.visitors,
+    p.city,
+    p.state,
+    pc.white,
+    pc.american_indian_and_alaska_native,
+    pc.hispanic_or_latino,
+    pc.black_or_african_american,
+    pc.asian
+from
+    (
+        select
+            year_of_arrival,
+            month_of_arrival,
+            country_of_citizenship as country,
+            port_of_entry,
+            count(country_of_citizenship) as visitors
+        from
+            visit
+        group by
+            year_of_arrival,
+            month_of_arrival,
+            country,
+            port_of_entry
+    ) as v
+    join country_mapping c on c.id = v.country
+    join port p on v.port_of_entry = p.port
+    join port_city pc on pc.city = p.city
+    and pc.state_code = p.state
+limit
+    100
+```
+After running the query you see this result:
+
+![Example query result](https://raw.githubusercontent.com/euweb/CapstoneProject/main/example_query.png)
+
+
 Description of how to approach the problem differently under the following scenarios:
 
   *  _If the data was increased by 100x._
