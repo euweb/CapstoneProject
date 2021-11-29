@@ -49,5 +49,5 @@ for root, subdirs, files in os.walk(root_dir):
       file_name = os.path.join(root, name)
       print(file_name)
       df_spark =spark.read.format('com.github.saurfang.sas.spark').load(file_name)
-      # df_spark.write.mode("append").partitionBy("i94yr","i94mon").parquet("data3/parquet")
+      # df_spark.write.mode("append").partitionBy("i94yr","i94mon").parquet("data/parquet")
       df_spark.select(*columns).write.mode("append").parquet("data/parquet")
