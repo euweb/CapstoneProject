@@ -95,6 +95,8 @@ After running the query you see this result:
 
 ![Example query result](https://raw.githubusercontent.com/euweb/CapstoneProject/main/example_query.png)
 
+Since we only interested on date grouped by year an month, we woud suggest to run the ETL pipeline once a month to gather and analyze the data for the last month. So the analysts can store only aggregated data and the visits table can be unloaded afterwards. 
+
 
 Description of how to approach the problem differently under the following scenarios:
 
