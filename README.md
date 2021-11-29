@@ -62,8 +62,22 @@ Description of how to approach the problem differently under the following scena
 
   *  _If the database needed to be accessed by 100+ people._
 
-     We would using AWS IAM to create users and roles to acccess data
+     We would use AWS IAM to create users and roles to acccess data
 
 
 ## File list
 
+| Name                              | Description                                                                        |
+|-----------------------------------|------------------------------------------------------------------------------------|
+| dags                              | folder containing the Apache Airflow dags                                          |
+| docker/Dockerfile                 | Docker file for Apache Airflow base image                                          |
+| plugins                           | folder containing all Apache Airflow plugin code                                   |
+| source_data                       | folder containing data sets used in this project                                   |
+| spark/convert_sas.py              | Skript to convert SAS files to Parquet format                                      |
+| Capstone Project SAS Labels.ipynb | Jupyter notebook extracting data from the SAS labels and exporting it to csv files |
+| Capstone Project Template.ipynb   | Jupyter notebook examining project data                                            |
+| DataDictionary.md                 | description of the data                                                            |
+| README.md                         | this documentation                                                                 |
+| docker-compose.yaml               | Docker composer file to run Apache Airflow                                         |
+| model.drawio                      | Diagram of the data model                                                          |
+| redshift_util.py                  | python script for creating and deleting redshift cluster                           |
