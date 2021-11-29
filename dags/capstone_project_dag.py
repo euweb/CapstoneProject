@@ -41,16 +41,16 @@ with DAG(
         postgres_conn_id="redshift"
     )
 
-    stage_i94imm_to_redshift = DummyOperator(task_id='Stage_i94imm',  dag=dag)
-    # stage_i94imm_to_redshift = StageToRedshiftParquetOperator(
-    #     task_id='Stage_i94imm',
-    #     dag=dag,
-    #     table="public.i94imm_staging",
-    #     redshift_conn_id="redshift",
-    #     aws_credentials_id="aws_credentials",
-    #     s3_bucket=S3_BUCKET,
-    #     s3_key="capestone-project/source-data/parquet"
-    # )
+    # stage_i94imm_to_redshift = DummyOperator(task_id='Stage_i94imm',  dag=dag)
+    stage_i94imm_to_redshift = StageToRedshiftParquetOperator(
+        task_id='Stage_i94imm',
+        dag=dag,
+        table="public.i94imm_staging",
+        redshift_conn_id="redshift",
+        aws_credentials_id="aws_credentials",
+        s3_bucket=S3_BUCKET,
+        s3_key="capestone-project/source-data/parquet"
+    )
 
     # stage_temperature_to_redshift = DummyOperator(task_id='stage_temperature_to_redshift',  dag=dag)
     # stage_temperature_to_redshift = StageToRedshiftCSVOperator(
@@ -65,96 +65,96 @@ with DAG(
     #     ignoreheader=1
     # )
 
-    stage_us_cities_demographics_to_redshift = DummyOperator(task_id='Stage_us_cities_demographics',  dag=dag)
-    # stage_us_cities_demographics_to_redshift = StageToRedshiftCSVOperator(
-    #     task_id='Stage_us_cities_demographics',
-    #     dag=dag,
-    #     table="public.us_cities_demographics_staging",
-    #     redshift_conn_id="redshift",
-    #     aws_credentials_id="aws_credentials",
-    #     s3_bucket=S3_BUCKET,
-    #     s3_key="capestone-project/source-data/us-cities-demographics.csv",
-    #     delimiter=';',
-    #     ignoreheader=1
-    # )
+    # stage_us_cities_demographics_to_redshift = DummyOperator(task_id='Stage_us_cities_demographics',  dag=dag)
+    stage_us_cities_demographics_to_redshift = StageToRedshiftCSVOperator(
+        task_id='Stage_us_cities_demographics',
+        dag=dag,
+        table="public.us_cities_demographics_staging",
+        redshift_conn_id="redshift",
+        aws_credentials_id="aws_credentials",
+        s3_bucket=S3_BUCKET,
+        s3_key="capestone-project/source-data/us-cities-demographics.csv",
+        delimiter=';',
+        ignoreheader=1
+    )
 
-    stage_airport_codes_to_redshift = DummyOperator(task_id='Stage_airport_codes',  dag=dag)
-    # stage_airport_codes_to_redshift = StageToRedshiftCSVOperator(
-    #     task_id='Stage_airport_codes',
-    #     dag=dag,
-    #     table="public.airport_codes_staging",
-    #     redshift_conn_id="redshift",
-    #     aws_credentials_id="aws_credentials",
-    #     s3_bucket=S3_BUCKET,
-    #     s3_key="capestone-project/source-data/airport-codes_csv.csv",
-    #     delimiter=',',
-    #     ignoreheader=1
-    # )
+    # stage_airport_codes_to_redshift = DummyOperator(task_id='Stage_airport_codes',  dag=dag)
+    stage_airport_codes_to_redshift = StageToRedshiftCSVOperator(
+        task_id='Stage_airport_codes',
+        dag=dag,
+        table="public.airport_codes_staging",
+        redshift_conn_id="redshift",
+        aws_credentials_id="aws_credentials",
+        s3_bucket=S3_BUCKET,
+        s3_key="capestone-project/source-data/airport-codes_csv.csv",
+        delimiter=',',
+        ignoreheader=1
+    )
 
-    copy_i94addrl_mapping_to_redshift = DummyOperator(task_id='Copy_i94addrl_mappings',  dag=dag)
-    # copy_i94addrl_mapping_to_redshift = StageToRedshiftCSVOperator(
-    #     task_id='Copy_i94addrl_mappings',
-    #     dag=dag,
-    #     table="public.state",
-    #     redshift_conn_id="redshift",
-    #     aws_credentials_id="aws_credentials",
-    #     s3_bucket=S3_BUCKET,
-    #     s3_key="capestone-project/source-data/i94addrl_mapping.csv",
-    #     delimiter=',',
-    #     ignoreheader=1
-    # )
+    # copy_i94addrl_mapping_to_redshift = DummyOperator(task_id='Copy_i94addrl_mappings',  dag=dag)
+    copy_i94addrl_mapping_to_redshift = StageToRedshiftCSVOperator(
+        task_id='Copy_i94addrl_mappings',
+        dag=dag,
+        table="public.state",
+        redshift_conn_id="redshift",
+        aws_credentials_id="aws_credentials",
+        s3_bucket=S3_BUCKET,
+        s3_key="capestone-project/source-data/i94addrl_mapping.csv",
+        delimiter=',',
+        ignoreheader=1
+    )
 
-    copy_i94_cit_res_mapping_to_redshift = DummyOperator(task_id='Copy_i94_cit_res_mappings',  dag=dag)
-    # copy_i94_cit_res_mapping_to_redshift = StageToRedshiftCSVOperator(
-    #     task_id='Copy_i94_cit_res_mappings',
-    #     dag=dag,
-    #     table="public.country_mapping",
-    #     redshift_conn_id="redshift",
-    #     aws_credentials_id="aws_credentials",
-    #     s3_bucket=S3_BUCKET,
-    #     s3_key="capestone-project/source-data/i94cntyl_mapping.csv",
-    #     delimiter=',',
-    #     ignoreheader=1
-    # )
+    # copy_i94_cit_res_mapping_to_redshift = DummyOperator(task_id='Copy_i94_cit_res_mappings',  dag=dag)
+    copy_i94_cit_res_mapping_to_redshift = StageToRedshiftCSVOperator(
+        task_id='Copy_i94_cit_res_mappings',
+        dag=dag,
+        table="public.country_mapping",
+        redshift_conn_id="redshift",
+        aws_credentials_id="aws_credentials",
+        s3_bucket=S3_BUCKET,
+        s3_key="capestone-project/source-data/i94cntyl_mapping.csv",
+        delimiter=',',
+        ignoreheader=1
+    )
 
-    copy_i94mode_mapping_to_redshift = DummyOperator(task_id='Copy_i94mode_mappings',  dag=dag)
-    # copy_i94mode_mapping_to_redshift = StageToRedshiftCSVOperator(
-    #     task_id='Copy_i94mode_mappings',
-    #     dag=dag,
-    #     table="public.mode_mapping",
-    #     redshift_conn_id="redshift",
-    #     aws_credentials_id="aws_credentials",
-    #     s3_bucket=S3_BUCKET,
-    #     s3_key="capestone-project/source-data/i94model_mapping.csv",
-    #     delimiter=',',
-    #     ignoreheader=1
-    # )
+    # copy_i94mode_mapping_to_redshift = DummyOperator(task_id='Copy_i94mode_mappings',  dag=dag)
+    copy_i94mode_mapping_to_redshift = StageToRedshiftCSVOperator(
+        task_id='Copy_i94mode_mappings',
+        dag=dag,
+        table="public.mode_mapping",
+        redshift_conn_id="redshift",
+        aws_credentials_id="aws_credentials",
+        s3_bucket=S3_BUCKET,
+        s3_key="capestone-project/source-data/i94model_mapping.csv",
+        delimiter=',',
+        ignoreheader=1
+    )
 
-    copy_i94port_mapping_to_redshift = DummyOperator(task_id='Copy_i94port_mappings',  dag=dag)
-    # copy_i94port_mapping_to_redshift = StageToRedshiftCSVOperator(
-    #     task_id='Copy_i94port_mappings',
-    #     dag=dag,
-    #     table="public.port_mapping",
-    #     redshift_conn_id="redshift",
-    #     aws_credentials_id="aws_credentials",
-    #     s3_bucket=S3_BUCKET,
-    #     s3_key="capestone-project/source-data/i94prtl_mapping.csv",
-    #     delimiter=',',
-    #     ignoreheader=1
-    # )
+    # copy_i94port_mapping_to_redshift = DummyOperator(task_id='Copy_i94port_mappings',  dag=dag)
+    copy_i94port_mapping_to_redshift = StageToRedshiftCSVOperator(
+        task_id='Copy_i94port_mappings',
+        dag=dag,
+        table="public.port_mapping",
+        redshift_conn_id="redshift",
+        aws_credentials_id="aws_credentials",
+        s3_bucket=S3_BUCKET,
+        s3_key="capestone-project/source-data/i94prtl_mapping.csv",
+        delimiter=',',
+        ignoreheader=1
+    )
 
-    copy_i94visa_mapping_to_redshift = DummyOperator(task_id='Copy_i94visa_mappings',  dag=dag)
-    # copy_i94visa_mapping_to_redshift = StageToRedshiftCSVOperator(
-    #     task_id='Copy_i94visa_mappings',
-    #     dag=dag,
-    #     table="public.visa_mapping",
-    #     redshift_conn_id="redshift",
-    #     aws_credentials_id="aws_credentials",
-    #     s3_bucket=S3_BUCKET,
-    #     s3_key="capestone-project/source-data/i94visa_mapping.csv",
-    #     delimiter=',',
-    #     ignoreheader=1
-    # )
+    # copy_i94visa_mapping_to_redshift = DummyOperator(task_id='Copy_i94visa_mappings',  dag=dag)
+    copy_i94visa_mapping_to_redshift = StageToRedshiftCSVOperator(
+        task_id='Copy_i94visa_mappings',
+        dag=dag,
+        table="public.visa_mapping",
+        redshift_conn_id="redshift",
+        aws_credentials_id="aws_credentials",
+        s3_bucket=S3_BUCKET,
+        s3_key="capestone-project/source-data/i94visa_mapping.csv",
+        delimiter=',',
+        ignoreheader=1
+    )
 
     load_visit_table = LoadFactOperator(
         task_id='Load_visit_fact_table',
@@ -248,9 +248,10 @@ with DAG(
         load_date_table,
         load_port_city_table,
         load_airport_table,
-        load_visit_table,
         copy_i94addrl_mapping_to_redshift,
-        copy_i94_cit_res_mapping_to_redshift
+        copy_i94_cit_res_mapping_to_redshift,
+        copy_i94mode_mapping_to_redshift,
+        copy_i94visa_mapping_to_redshift
     ] >> end_laod_data_operator
 
     end_laod_data_operator >> run_quality_checks >> end_operator
